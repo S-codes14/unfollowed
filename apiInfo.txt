@@ -1,0 +1,7 @@
+ways to get user followers
+
+github: https://api.github.com/users/s-codes14/followers
+
+instgram: https://github.com/yatsenkolesh/instagram-nodejs#you-can-get-instagram-followers-with-next-code
+
+twitter: still to uncover
