@@ -1,12 +1,13 @@
 const express = require('express');
 const Model = require('../models/model');
+const {github} = require('../getfollowers')
 const router = express.Router();
 
-//Post Method
+//Create user
 router.post('/post', async (req, res) => {
     const data = new Model({
         name: req.body.name,
-        age: req.body.age
+        password: req.body.password
     })
 
     try {
@@ -18,55 +19,28 @@ router.post('/post', async (req, res) => {
     }
 })
 
-//Get all Method
-router.get('/getAll', async (req, res) => {
-    try {
-        const data = await Model.find();
+// update Usernames and fetch followers
+router.post('/updateuser/:id', async (req, res) => {
+    let { name, IgTag, TwTag, GitTag } = req.body
+    var gitFollowers = await github();
+
+    try{
+        const data = await Model.findByIdAndUpdate(req.params.id, {
+            $set: {
+                name,
+                'instagram.tag': IgTag,
+                'instagram.followers': ["test1", "test2"],
+                'twitter.tag': TwTag,
+                'twitter.followers': ["test1", "test2"],
+                'github.tag': GitTag,
+                'github.followers': gitFollowers,
+            },
+        }, { new: true })
+
         res.json(data)
     }
-    catch (error) {
-        res.status(500).json({ message: error.message })
-    }
-})
-
-//Get by ID Method
-router.get('/getOne/:id', async (req, res) => {
-    try {
-        const data = await Model.findById(req.params.id);
-        res.json(data)
-    }
-    catch (error) {
-        res.status(500).json({ message: error.message })
-    }
-})
-
-//Update by ID Method
-router.patch('/update/:id', async (req, res) => {
-    try {
-        const id = req.params.id;
-        const updatedData = req.body;
-        const options = { new: true };
-
-        const result = await Model.findByIdAndUpdate(
-            id, updatedData, options
-        )
-
-        res.send(result)
-    }
-    catch (error) {
-        res.status(500).json({ message: error.message })
-    }
-})
-
-//Delete by ID Method
-router.delete('/delete/:id', async (req, res) => {
-    try {
-        const id = req.params.id;
-        const data = await Model.findByIdAndDelete(id)
-        res.send(`Document with ${data.name} has been deleted..`)
-    }
-    catch (error) {
-        res.status(400).json({ message: error.message })
+    catch(error){
+        res.status(500).json({message: error.message})
     }
 })
 

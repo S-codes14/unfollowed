@@ -5,10 +5,22 @@ const dataSchema = new mongoose.Schema({
         required: true,
         type: String
     },
-    age: {
+    password: {
         required: true,
-        type: Number
-    }
+        type: String
+    },
+    instagram: {
+         tag: {type: String},
+         followers: []
+    },
+    github: {
+        tag: {type: String},
+        followers: []
+   },
+   twitter: {
+        tag: {type: String},
+        followers: []
+   }
 })
 
 module.exports = mongoose.model('Data', dataSchema)
