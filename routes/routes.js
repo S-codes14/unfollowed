@@ -22,7 +22,7 @@ router.post('/post', async (req, res) => {
 // update Usernames and fetch followers
 router.post('/updateuser/:id', async (req, res) => {
     let { name, IgTag, TwTag, GitTag } = req.body
-    var gitFollowers = await github();
+    var gitFollowers = await github(GitTag);
 
     try{
         const data = await Model.findByIdAndUpdate(req.params.id, {
