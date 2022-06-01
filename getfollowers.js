@@ -34,20 +34,40 @@ exports.instagram = async (username1) => {
   await client.login();
   const user = await client.getUserByUsername({ username: username1 });
   // first: user.edge_followed_by.count
-  const followers = await client.getFollowers({
+	
+  let followers = [],
+  try {
+  let after = null, has_next = true
+  while (has_next) {
+   const res = await client.getFollowers({
     userId: user.id,
-    first: user.edge_followed_by.count,
+    first: 50,
+    after: after,	   
   });
+   has_next = res.data.user.edge_followed_by.page_info.has_next_page
+   after = res.data.user.edge_followed_by.page_info.end_cursor
+   followers = followers.concat(res.data.user.edge_followed_by.edges.map(({node}) => {
+        return {
+          username: node.username
+        }	
+	   }))
+  }
+  }catch (err){
+	  console.log(err)
+	  
+  }
+	  
+  
 //   I should probably set a timer saying if followers did not get, rerun the shit using recursive 
 //   setInterval(()=>{
 //     instagram(username1); // or something else
 // }, 80000 - Math.random()*10000)
-  const data = followers.data
+  const data = followers
 
-  t = data.map((follower) => {
-    return(follower.username)
-   });
-   console.log(t.length)
-   return(t)
+//   t = data.map((follower) => {
+//     return(follower.username)
+//    });
+   console.log(data.length)
+   return(data)
 };
 
