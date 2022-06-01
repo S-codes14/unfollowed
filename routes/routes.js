@@ -1,6 +1,6 @@
 const express = require('express');
 const Model = require('../models/model');
-const {github} = require('../getfollowers')
+const {github, instagram} = require('../getfollowers')
 const router = express.Router();
 
 //Create user
@@ -23,13 +23,14 @@ router.post('/post', async (req, res) => {
 router.post('/updateuser/:id', async (req, res) => {
     let { name, IgTag, TwTag, GitTag } = req.body
     var gitFollowers = await github(GitTag);
+    var igFollowers = await instagram(IgTag)
 
     try{
         const data = await Model.findByIdAndUpdate(req.params.id, {
             $set: {
                 name,
                 'instagram.tag': IgTag,
-                'instagram.followers': ["test1", "test2"],
+                'instagram.followers': igFollowers,
                 'twitter.tag': TwTag,
                 'twitter.followers': ["test1", "test2"],
                 'github.tag': GitTag,

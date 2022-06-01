@@ -1,17 +1,7 @@
 const axios = require('axios').default;
+let Instagram = require("instagram-web-api");
 
 exports.github = async (username) => {
-    // var response = await axios.get('https://api.github.com/users/s-codes14/followers');
-    // if (response.status === 200) { 
-    //     var d = response.data
-    //     var t = d.map(item => {
-    //         return(item.login)
-    //        });
-    //     console.log(t.length) 
-    //     console.log(d.length) 
-    //     return d
-     
-    // } 
     let followers = [];
 	let page = 1;
 	try {
@@ -34,3 +24,30 @@ exports.github = async (username) => {
 		console.log(error)
 	}
 }
+
+// const instagram = async () => {
+const client = new Instagram({
+  username: "randollyapp",
+  password: "MoonLight22",
+});
+exports.instagram = async (username1) => {
+  await client.login();
+  const user = await client.getUserByUsername({ username: username1 });
+  // first: user.edge_followed_by.count
+  const followers = await client.getFollowers({
+    userId: user.id,
+    first: user.edge_followed_by.count,
+  });
+//   I should probably set a timer saying if followers did not get, rerun the shit using recursive 
+//   setInterval(()=>{
+//     instagram(username1); // or something else
+// }, 80000 - Math.random()*10000)
+  const data = followers.data
+
+  t = data.map((follower) => {
+    return(follower.username)
+   });
+   console.log(t.length)
+   return(t)
+};
+
