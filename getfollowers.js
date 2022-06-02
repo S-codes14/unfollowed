@@ -26,31 +26,33 @@ exports.github = async (username) => {
 }
 
 // const instagram = async () => {
+  const { username, password } = process.env 
 const client = new Instagram({
-  username: "randollyapp",
-  password: "MoonLight22",
+  username: username,
+  password: password,
 });
 exports.instagram = async (username1) => {
   await client.login();
   const user = await client.getUserByUsername({ username: username1 });
   // first: user.edge_followed_by.count
-	
-  let followers = [],
+  let followers = [];
   try {
-  let after = null, has_next = true
+  let after = null, has_next = true, id = user.id
   while (has_next) {
+    console.log(id)
    const res = await client.getFollowers({
-    userId: user.id,
+    userId: id,
     first: 50,
     after: after,	   
   });
-   has_next = res.data.user.edge_followed_by.page_info.has_next_page
-   after = res.data.user.edge_followed_by.page_info.end_cursor
-   followers = followers.concat(res.data.user.edge_followed_by.edges.map(({node}) => {
-        return {
-          username: node.username
-        }	
-	   }))
+  console.log("res: ", res)
+  //  has_next = res.data.user.edge_followed_by.page_info.has_next_page
+  //  after = res.data.user.edge_followed_by.page_info.end_cursor
+  //  followers = followers.concat(res.data.user.edge_followed_by.edges.map(({node}) => {
+  //       return {
+  //         username: node.username
+  //       }	
+	//    }))
   }
   }catch (err){
 	  console.log(err)
